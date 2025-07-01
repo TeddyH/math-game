@@ -128,8 +128,8 @@ python3 --version
 # pip
 python3 -m pip --version
 
-# curl (헬스 체크용)
-curl --version
+# Git
+git --version
 ```
 
 ### 📁 배포 디렉토리
@@ -143,13 +143,10 @@ curl --version
 ### 🔄 배포 과정
 
 1. `main` 브랜치에 push 시 자동 실행
-2. 서버 환경 확인
-3. 코드 파일 전송
-4. 기존 Flask 서버 종료
-5. Python 가상환경 생성/업데이트
-6. 새 Flask 서버 시작
-7. 헬스 체크 수행
-8. 실패 시 자동 롤백
+2. Git으로 최신 코드 다운로드
+3. 기존 Flask 서버 종료
+4. Python 가상환경 생성/업데이트
+5. 새 Flask 서버 시작
 
 ### 🌐 접속 정보
 
@@ -168,5 +165,5 @@ ps aux | grep "python app.py"
 tail -f /home/{username}/math1/flask.log
 
 # 서비스 상태 확인
-curl http://localhost:5001
+curl http://localhost:5001/health
 ```
