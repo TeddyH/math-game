@@ -1,0 +1,397 @@
+/* 전체 페이지 스타일 */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+/* 메인 배경 그래디언트 */
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* 카드 스타일 */
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
+
+/* 버튼 스타일 */
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-lg {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+}
+
+/* 연산 버튼 특별 스타일 */
+.operation-btn {
+    height: 120px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(45deg, var(--bs-btn-bg), var(--bs-btn-hover-bg));
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.operation-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 레벨 버튼 스타일 */
+.level-btn {
+    height: 100px;
+    border: 2px solid #0d6efd;
+    transition: all 0.3s ease;
+}
+
+.level-btn:hover {
+    background: linear-gradient(45deg, #0d6efd, #6610f2);
+    color: white;
+    border-color: #6610f2;
+}
+
+/* 입력 필드 스타일 */
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 15px rgba(13, 110, 253, 0.2);
+}
+
+.form-control-lg {
+    padding: 15px 20px;
+}
+
+/* 선택 박스 스타일 */
+.form-select {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+}
+
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 15px rgba(13, 110, 253, 0.2);
+}
+
+/* 네비게이션 바 스타일 */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* 게임 화면 스타일 */
+#question {
+    color: #0d6efd;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 30px 0;
+}
+
+/* 결과 알림 스타일 */
+.alert {
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.alert-success {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+}
+
+.alert-danger {
+    background: linear-gradient(45deg, #dc3545, #fd7e14);
+    color: white;
+}
+
+/* 테이블 스타일 */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+    background: linear-gradient(45deg, #0d6efd, #6610f2);
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 15px;
+}
+
+.table td {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+/* 랭킹 테이블 특별 스타일 */
+.table-warning {
+    background: linear-gradient(45deg, #ffc107, #fd7e14) !important;
+    color: white;
+}
+
+.table-secondary {
+    background: linear-gradient(45deg, #6c757d, #adb5bd) !important;
+    color: white;
+}
+
+.table-info {
+    background: linear-gradient(45deg, #17a2b8, #20c997) !important;
+    color: white;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card,
+.btn,
+.alert {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* 정답/오답 애니메이션 효과 */
+.choice-btn.btn-success {
+    animation: correctAnswer 0.6s ease-out;
+}
+
+.choice-btn.btn-danger {
+    animation: wrongAnswer 0.4s ease-out;
+}
+
+@keyframes correctAnswer {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(40, 167, 69, 0.5);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(40, 167, 69, 0.8);
+    }
+
+    100% {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(40, 167, 69, 0.6);
+    }
+}
+
+@keyframes wrongAnswer {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* 결과 메시지 애니메이션 */
+.alert {
+    animation: slideInDown 0.4s ease-out;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 로딩 스피너 스타일 */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .operation-btn {
+        height: 80px;
+        font-size: 1.1rem;
+    }
+
+    .level-btn {
+        height: 80px;
+    }
+
+    #question {
+        font-size: 2rem;
+    }
+
+    .btn-lg {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 15px;
+    }
+
+    .card-body {
+        padding: 20px !important;
+    }
+
+    #question {
+        font-size: 1.5rem;
+    }
+}
+
+/* 추가 유틸리티 클래스 */
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.rounded-lg {
+    border-radius: 15px !important;
+}
+
+/* 점수 표시 스타일 */
+.nav-link.text-warning {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 8px 16px !important;
+    margin-left: 10px;
+}
+
+/* 게임 종료 버튼 스타일 */
+#endGame {
+    background: linear-gradient(45deg, #dc3545, #fd7e14);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-weight: 600;
+}
+
+#endGame:hover {
+    background: linear-gradient(45deg, #c82333, #e8650e);
+    color: white;
+}
+
+/* 객관식 선택지 버튼 스타일 */
+.choice-btn {
+    font-size: 1.5rem !important;
+    font-weight: bold;
+    border: 3px solid #28a745;
+    transition: all 0.3s ease;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.choice-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.choice-btn:disabled {
+    opacity: 1;
+}
+
+.choice-btn.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.choice-btn.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* 모바일 터치 최적화 */
+@media (max-width: 768px) {
+    .choice-btn {
+        font-size: 1.3rem !important;
+        min-height: 70px;
+        margin-bottom: 15px;
+    }
+
+    .choice-btn:active {
+        transform: scale(0.98);
+    }
+}
+
+@media (max-width: 576px) {
+    .choice-btn {
+        font-size: 1.2rem !important;
+        min-height: 60px;
+    }
+
+    .card-body.p-5 {
+        padding: 20px !important;
+    }
+
+    #question {
+        font-size: 1.8rem !important;
+        margin: 20px 0 !important;
+    }
+}

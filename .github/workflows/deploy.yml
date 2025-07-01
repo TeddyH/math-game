@@ -1,0 +1,170 @@
+name: Deploy MATH-GAME
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    # SSH 키 설정 단계 추가
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        known_hosts: unnecessary
+        if_key_exists: replace
+
+    # Known Hosts 설정
+    - name: Adding Known Hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+    # Python 설정
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    # Python 의존성 설치 및 테스트
+    - name: Install and Test Python dependencies
+      run: |
+        pip install -r requirements.txt
+        python -c "import flask; print('Flask import successful')"
+
+    # 서버에 배포
+    - name: Deploy to Server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        source: "app.py,requirements.txt,templates/*,static/*"
+        target: "/home/${{ secrets.SERVER_USERNAME }}/math1"
+        strip_components: 0
+
+    # 서버에서 Flask 애플리케이션 재시작
+    - name: Restart Flask Application
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          # 프로젝트 디렉토리로 이동
+          cd /home/${{ secrets.SERVER_USERNAME }}/math1 || exit 1
+          echo "현재 디렉토리: $(pwd)"
+          
+          # 기존 Flask 서버 프로세스 종료
+          if [ -f flask-server.pid ]; then
+            pid=$(cat flask-server.pid)
+            echo "기존 Flask 서버 PID: $pid"
+            if kill -0 $pid 2>/dev/null; then
+              kill $pid && echo "Flask 서버 종료 완료" || echo "Flask 서버 종료 실패"
+              sleep 2
+            else
+              echo "PID $pid 프로세스가 이미 종료됨"
+            fi
+            rm -f flask-server.pid
+          else
+            echo "flask-server.pid 파일이 없음"
+          fi
+          
+          # 기존 프로세스 강제 종료 (포트 5001 사용 중인 프로세스)
+          pkill -f "python.*app.py" || echo "실행 중인 app.py 프로세스 없음"
+          sleep 1
+          
+          # Python 가상환경 확인 및 생성
+          if [ ! -d "venv" ]; then
+            echo "가상환경 생성 중..."
+            python3 -m venv venv
+          fi
+          
+          # 가상환경 활성화 및 의존성 설치
+          source venv/bin/activate
+          pip install -r requirements.txt
+          
+          # Flask 애플리케이션 시작 (백그라운드)
+          echo "Flask 애플리케이션 시작 중..."
+          nohup python app.py > flask.log 2>&1 &
+          echo $! > flask-server.pid
+          disown
+          
+          # 서비스 상태 확인
+          sleep 3
+          if [ -f flask-server.pid ]; then
+            pid=$(cat flask-server.pid)
+            if kill -0 $pid 2>/dev/null; then
+              echo "Flask 서버 정상 시작됨 (PID: $pid)"
+              echo "로그 확인:"
+              tail -n 5 flask.log || echo "로그 파일 없음"
+            else
+              echo "Flask 서버 시작 실패"
+              cat flask.log || echo "로그 파일 없음"
+              exit 1
+            fi
+          else
+            echo "PID 파일 생성 실패"
+            exit 1
+          fi
+          
+          echo "배포 완료!"
+
+    # 헬스 체크 및 롤백
+    - name: Health Check and Rollback
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          cd /home/${{ secrets.SERVER_USERNAME }}/math1
+          
+          # 헬스 체크 (최대 30초 대기)
+          echo "헬스 체크 시작..."
+          for i in {1..6}; do
+            if curl -f http://localhost:5001/health >/dev/null 2>&1; then
+              echo "헬스 체크 성공!"
+              exit 0
+            else
+              echo "헬스 체크 시도 $i/6..."
+              sleep 5
+            fi
+          done
+          
+          # 헬스 체크 실패 시 롤백
+          echo "헬스 체크 실패! 롤백 시작..."
+          if [ -f flask-server.pid ]; then
+            pid=$(cat flask-server.pid)
+            kill $pid 2>/dev/null || true
+            rm -f flask-server.pid
+          fi
+          
+          # 이전 버전이 있다면 복원 (여기서는 로그만 출력)
+          echo "롤백 완료. 배포 실패!"
+          cat flask.log || echo "로그 파일 없음"
+          exit 1
+
+    # 서버 환경 준비
+    - name: Prepare Server Environment
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          # 프로젝트 디렉토리 생성
+          mkdir -p /home/${{ secrets.SERVER_USERNAME }}/math1
+          
+          # Python3와 pip 확인
+          python3 --version || (echo "Python3가 설치되지 않음" && exit 1)
+          python3 -m pip --version || (echo "pip가 설치되지 않음" && exit 1)
+          
+          # 기본 시스템 패키지 확인
+          which curl >/dev/null || (echo "curl이 설치되지 않음" && exit 1)
+          
+          echo "서버 환경 준비 완료"

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수학 게임 - 게임 중</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <span class="navbar-brand">🎯 수학 게임</span>
+            <div class="navbar-nav ms-auto">
+                <span class="nav-item nav-link text-white">
+                    {{ student_info.school }} {{ student_info.grade }}학년 {{ student_info.name }}
+                </span>
+                <span class="nav-item nav-link text-warning fw-bold">
+                    점수: <span id="totalScore">0</span>점
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- 게임 선택 화면 -->
+        <div id="gameSelection" class="row">
+            <div class="col-12 text-center mb-4">
+                <h2>연산을 선택하세요</h2>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <button class="btn btn-success btn-lg w-100 operation-btn" data-operation="addition">
+                    ➕ 덧셈
+                </button>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <button class="btn btn-warning btn-lg w-100 operation-btn" data-operation="subtraction">
+                    ➖ 뺄셈
+                </button>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <button class="btn btn-info btn-lg w-100 operation-btn" data-operation="multiplication">
+                    ✖️ 곱셈
+                </button>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <button class="btn btn-danger btn-lg w-100 operation-btn" data-operation="division">
+                    ➗ 나눗셈
+                </button>
+            </div>
+        </div>
+
+        <!-- 레벨 선택 화면 -->
+        <div id="levelSelection" class="row" style="display: none;">
+            <div class="col-12 text-center mb-4">
+                <h2 id="operationTitle">레벨을 선택하세요</h2>
+            </div>
+            <div class="col-md-4 mb-3">
+                <button class="btn btn-outline-primary btn-lg w-100 level-btn" data-level="1">
+                    🌟 레벨 1<br>
+                    <small>한자리수 (10점)</small>
+                </button>
+            </div>
+            <div class="col-md-4 mb-3">
+                <button class="btn btn-outline-primary btn-lg w-100 level-btn" data-level="2">
+                    ⭐ 레벨 2<br>
+                    <small>두자리수 (20점)</small>
+                </button>
+            </div>
+            <div class="col-md-4 mb-3">
+                <button class="btn btn-outline-primary btn-lg w-100 level-btn" data-level="3">
+                    💫 레벨 3<br>
+                    <small>세자리수 (30점)</small>
+                </button>
+            </div>
+            <div class="col-12 text-center">
+                <button class="btn btn-secondary" id="backToOperations">← 연산 선택으로 돌아가기</button>
+            </div>
+        </div>
+
+        <!-- 게임 플레이 화면 -->
+        <div id="gamePlay" class="row" style="display: none;">
+            <div class="col-12">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h3 id="currentLevel">레벨 1 - 한자리수</h3>
+                    </div>
+                    <div class="card-body text-center p-5">
+                        <div class="mb-4">
+                            <h1 class="display-2 text-primary" id="question">문제가 로딩중...</h1>
+                        </div>
+
+                        <!-- 객관식 선택지들 -->
+                        <div class="mb-4" id="choicesContainer">
+                            <div class="row">
+                                <div class="col-12 col-md-4 mb-3">
+                                    <button class="btn btn-outline-success btn-lg w-100 choice-btn" data-choice="0"
+                                        style="font-size: 1.5rem; height: 80px;">
+                                        <span class="choice-text">선택지 1</span>
+                                    </button>
+                                </div>
+                                <div class="col-12 col-md-4 mb-3">
+                                    <button class="btn btn-outline-success btn-lg w-100 choice-btn" data-choice="1"
+                                        style="font-size: 1.5rem; height: 80px;">
+                                        <span class="choice-text">선택지 2</span>
+                                    </button>
+                                </div>
+                                <div class="col-12 col-md-4 mb-3">
+                                    <button class="btn btn-outline-success btn-lg w-100 choice-btn" data-choice="2"
+                                        style="font-size: 1.5rem; height: 80px;">
+                                        <span class="choice-text">선택지 3</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <button class="btn btn-info btn-lg me-3" id="nextProblem" style="display: none;">
+                                → 다음 문제
+                            </button>
+                            <button class="btn btn-secondary" id="backToLevels">← 레벨 선택으로</button>
+                        </div>
+                        <div id="result" class="alert" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 게임 종료 버튼 -->
+        <div class="text-center mt-4">
+            <button class="btn btn-outline-danger" id="endGame" style="display: none;">
+                게임 종료하고 점수 저장
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentOperation = '';
+        let currentLevel = 1;
+        let totalScore = 0;
+
+        // 연산 선택
+        document.querySelectorAll('.operation-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                currentOperation = this.dataset.operation;
+                const operationNames = {
+                    'addition': '덧셈',
+                    'subtraction': '뺄셈',
+                    'multiplication': '곱셈',
+                    'division': '나눗셈'
+                };
+                document.getElementById('operationTitle').textContent = operationNames[currentOperation] + ' 레벨을 선택하세요';
+                document.getElementById('gameSelection').style.display = 'none';
+                document.getElementById('levelSelection').style.display = 'block';
+            });
+        });
+
+        // 레벨 선택
+        document.querySelectorAll('.level-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                currentLevel = parseInt(this.dataset.level);
+                document.getElementById('levelSelection').style.display = 'none';
+                document.getElementById('gamePlay').style.display = 'block';
+                document.getElementById('endGame').style.display = 'block';
+                loadNewProblem();
+            });
+        });
+
+        // 뒤로가기 버튼들
+        document.getElementById('backToOperations').addEventListener('click', function () {
+            document.getElementById('levelSelection').style.display = 'none';
+            document.getElementById('gameSelection').style.display = 'block';
+        });
+
+        document.getElementById('backToLevels').addEventListener('click', function () {
+            document.getElementById('gamePlay').style.display = 'none';
+            document.getElementById('levelSelection').style.display = 'block';
+            document.getElementById('endGame').style.display = 'none';
+        });
+
+        // 새 문제 로드
+        async function loadNewProblem() {
+            try {
+                const response = await fetch('/api/problem', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        operation: currentOperation,
+                        level: currentLevel
+                    })
+                });
+
+                const data = await response.json();
+                document.getElementById('question').textContent = data.question + ' = ?';
+                document.getElementById('currentLevel').textContent = `레벨 ${data.level} - ${data.level_name}`;
+
+                // 선택지 업데이트 및 초기화
+                const choiceBtns = document.querySelectorAll('.choice-btn');
+                choiceBtns.forEach((btn, index) => {
+                    if (index < data.choices.length) {
+                        btn.querySelector('.choice-text').textContent = data.choices[index];
+                        btn.style.display = 'block';
+                        btn.className = 'btn btn-outline-success btn-lg w-100 choice-btn';
+                        btn.disabled = false; // 버튼 활성화
+                    } else {
+                        btn.style.display = 'none';
+                    }
+                });
+
+                // 결과 메시지 숨기기
+                document.getElementById('result').style.display = 'none';
+                document.getElementById('nextProblem').style.display = 'none';
+
+                // 선택지 이벤트 활성화
+                enableChoices();
+            } catch (error) {
+                alert('문제를 로드하는 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 선택지 버튼 활성화
+        function enableChoices() {
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.removeEventListener('click', handleChoiceClick); // 기존 이벤트 제거
+                btn.addEventListener('click', handleChoiceClick);
+            });
+        }
+
+        // 선택지 클릭 핸들러
+        function handleChoiceClick() {
+            const selectedChoice = parseInt(this.dataset.choice);
+            const selectedAnswer = parseInt(this.querySelector('.choice-text').textContent);
+            checkAnswer(selectedAnswer, this);
+        }
+
+        // 답 확인 (객관식 버전)
+        async function checkAnswer(selectedAnswer, selectedButton) {
+            try {
+                const response = await fetch('/api/answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ answer: selectedAnswer })
+                });
+
+                const data = await response.json();
+                const resultDiv = document.getElementById('result');
+
+                if (data.correct) {
+                    // 정답인 경우
+                    selectedButton.className = 'btn btn-success btn-lg w-100 choice-btn';
+                    resultDiv.className = 'alert alert-success';
+                    resultDiv.innerHTML = `🎉 정답입니다! +${data.points}점`;
+                    resultDiv.style.display = 'block';
+
+                    // 점수 업데이트
+                    document.getElementById('totalScore').textContent = data.total_score;
+                    totalScore = data.total_score;
+
+                    // 모든 버튼 비활성화
+                    document.querySelectorAll('.choice-btn').forEach(btn => {
+                        btn.disabled = true;
+                    });
+
+                    // 1.5초 후 자동으로 다음 문제로 이동
+                    setTimeout(() => {
+                        loadNewProblem();
+                    }, 1500);
+
+                } else {
+                    // 오답인 경우
+                    selectedButton.className = 'btn btn-danger btn-lg w-100 choice-btn';
+                    selectedButton.disabled = true; // 틀린 선택지만 비활성화
+
+                    resultDiv.className = 'alert alert-warning';
+                    resultDiv.innerHTML = `❌ 틀렸습니다. 다시 시도해보세요!`;
+                    resultDiv.style.display = 'block';
+
+                    // 남은 선택지가 1개인지 확인 (마지막 기회)
+                    const enabledButtons = document.querySelectorAll('.choice-btn:not(:disabled)');
+                    if (enabledButtons.length === 1) {
+                        // 마지막 선택지도 틀렸다면 정답 표시
+                        setTimeout(() => {
+                            document.querySelectorAll('.choice-btn').forEach(btn => {
+                                if (parseInt(btn.querySelector('.choice-text').textContent) === data.answer) {
+                                    btn.className = 'btn btn-success btn-lg w-100 choice-btn';
+                                }
+                                btn.disabled = true;
+                            });
+
+                            resultDiv.className = 'alert alert-danger';
+                            resultDiv.innerHTML = `❌ 정답은 ${data.answer}입니다.`;
+
+                            // 2초 후 다음 문제로 이동
+                            setTimeout(() => {
+                                loadNewProblem();
+                            }, 2000);
+                        }, 1000);
+                    }
+                }
+            } catch (error) {
+                alert('답을 확인하는 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 다음 문제
+        document.getElementById('nextProblem').addEventListener('click', loadNewProblem);
+
+        // 게임 종료
+        document.getElementById('endGame').addEventListener('click', async function () {
+            if (totalScore === 0) {
+                alert('점수가 0점입니다. 최소 한 문제는 맞춰주세요!');
+                return;
+            }
+
+            const confirmEnd = confirm(`게임을 종료하고 ${totalScore}점을 저장하시겠습니까?`);
+            if (confirmEnd) {
+                try {
+                    await fetch('/api/save_score', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                    alert(`게임이 종료되었습니다. 최종 점수: ${totalScore}점`);
+                    window.location.href = '/';
+                } catch (error) {
+                    alert('점수 저장 중 오류가 발생했습니다.');
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
