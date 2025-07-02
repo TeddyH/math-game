@@ -3,6 +3,23 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
+    /* iOS Safari 주소창 대응 */
+    min-height: -webkit-fill-available;
+    overflow-x: hidden;
+}
+
+/* iOS Safari 주소창 높이 대응 */
+html {
+    height: -webkit-fill-available;
+}
+
+/* 컨테이너 높이 조정 */
+.container {
+    max-height: calc(100vh - 70px);
+    /* 네비게이션 바 높이 제외 */
+    max-height: calc(100dvh - 70px);
+    /* 동적 뷰포트 높이 사용 */
+    overflow-y: auto;
 }
 
 /* 메인 배경 그래디언트 */
@@ -286,11 +303,26 @@ body {
         padding: 12px 24px;
         font-size: 1rem;
     }
+
+    /* iOS Safari 주소창 대응 */
+    body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+
+    .container {
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+        max-height: calc(100vh - 70px);
+        max-height: calc(100dvh - 70px);
+    }
 }
 
 @media (max-width: 576px) {
     .container {
         padding: 15px;
+        max-height: calc(100vh - 60px);
+        max-height: calc(100dvh - 60px);
+        overflow-y: auto;
     }
 
     .card-body {
@@ -299,6 +331,18 @@ body {
 
     #question {
         font-size: 1.5rem;
+    }
+
+    /* iOS Safari 전용 스타일 */
+    @supports (-webkit-touch-callout: none) {
+        body {
+            min-height: -webkit-fill-available;
+        }
+
+        .container {
+            min-height: calc(-webkit-fill-available - 60px);
+            max-height: calc(-webkit-fill-available - 60px);
+        }
     }
 }
 
