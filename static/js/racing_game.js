@@ -25,30 +25,45 @@ class RacingMathGame {
     }
 
     bindEvents() {
-        // 난이도 선택
+        // 난이도 선택 (클릭과 터치 모두 지원)
         document.querySelectorAll('.difficulty-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            const selectDifficulty = (e) => {
+                e.preventDefault();
                 document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('selected'));
-                e.target.classList.add('selected');
-                this.currentLevel = parseInt(e.target.dataset.level);
+                btn.classList.add('selected');
+                this.currentLevel = parseInt(btn.dataset.level);
                 this.checkStartButtonState();
-            });
+            };
+
+            btn.addEventListener('click', selectDifficulty);
+            btn.addEventListener('touchend', selectDifficulty);
         });
 
-        // 연산 선택
+        // 연산 선택 (클릭과 터치 모두 지원)
         document.querySelectorAll('.operation-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            const selectOperation = (e) => {
+                e.preventDefault();
                 document.querySelectorAll('.operation-btn').forEach(b => b.classList.remove('selected'));
-                e.target.classList.add('selected');
-                this.currentOperation = e.target.dataset.operation;
+                btn.classList.add('selected');
+                this.currentOperation = btn.dataset.operation;
                 this.checkStartButtonState();
-            });
+            };
+
+            btn.addEventListener('click', selectOperation);
+            btn.addEventListener('touchend', selectOperation);
         });
 
-        // 게임 시작
-        document.getElementById('startGameBtn').addEventListener('click', () => {
+        // 게임 시작 (클릭과 터치 모두 지원)
+        const startBtn = document.getElementById('startGameBtn');
+        const startGame = (e) => {
+            e.preventDefault();
             this.startGame();
-        });        // 키보드 조작 (부드러운 이동)
+        };
+
+        startBtn.addEventListener('click', startGame);
+        startBtn.addEventListener('touchend', startGame);
+
+        // 키보드 조작 (부드러운 이동)
         document.addEventListener('keydown', (e) => {
             if (this.isGameActive && this.cloudsFalling) {
                 if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {

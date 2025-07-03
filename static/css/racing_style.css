@@ -112,6 +112,10 @@ html {
     transition: all 0.3s ease;
     font-size: 1rem;
     min-width: 100px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .difficulty-btn:hover,
@@ -137,6 +141,10 @@ html {
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 20px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .start-btn:enabled:hover {
@@ -612,6 +620,10 @@ html {
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 1rem;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .play-again-btn {
@@ -757,5 +769,44 @@ html {
         .game-screen {
             height: calc(-webkit-fill-available - 50px);
         }
+    }
+}
+
+/* 모바일 터치 피드백 */
+.difficulty-btn:active,
+.operation-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.95);
+}
+
+.start-btn:active {
+    transform: scale(0.95);
+}
+
+.play-again-btn:active,
+.save-score-btn:active,
+.view-rankings-btn:active {
+    transform: scale(0.95);
+}
+
+/* 모바일에서 버튼 상태 개선 */
+@media (hover: none) and (pointer: coarse) {
+
+    .difficulty-btn:hover,
+    .operation-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: none;
+    }
+
+    .start-btn:enabled:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .play-again-btn:hover,
+    .save-score-btn:hover,
+    .view-rankings-btn:hover {
+        transform: none;
+        box-shadow: none;
     }
 }
