@@ -45,6 +45,9 @@
                                             <th scope="col">학교</th>
                                             <th scope="col" class="text-center">학년</th>
                                             <th scope="col" class="text-center">점수</th>
+                                            <th scope="col" class="text-center">게임타입</th>
+                                            <th scope="col" class="text-center">거리</th>
+                                            <th scope="col" class="text-center">정확도</th>
                                             <th scope="col" class="text-center">달성일시</th>
                                         </tr>
                                     </thead>
@@ -124,6 +127,15 @@
                     <td>${ranking.school}</td>
                     <td class="text-center">${ranking.grade}학년</td>
                     <td class="text-center fw-bold text-primary">${ranking.score}점</td>
+                    <td class="text-center">
+                        ${ranking.game_type === 'racing' ? '🏎️ 레이싱' : '📚 클래식'}
+                    </td>
+                    <td class="text-center">
+                        ${ranking.distance ? ranking.distance + 'km' : '-'}
+                    </td>
+                    <td class="text-center">
+                        ${ranking.accuracy ? ranking.accuracy + '%' : '-'}
+                    </td>
                     <td class="text-center"><small>${formatDate(ranking.date)}</small></td>
                 `;
 

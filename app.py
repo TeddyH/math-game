@@ -119,6 +119,13 @@ def game():
         return redirect(url_for('index'))
     return render_template('game.html', student_info=session['student_info'])
 
+@app.route('/racing')
+def racing_game():
+    if 'student_info' not in session:
+        return redirect(url_for('index'))
+    
+    return render_template('racing_game.html', student_info=session['student_info'])
+
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
@@ -147,6 +154,17 @@ def get_problem():
         'level': level,
         'level_name': LEVELS[level]['name']
     })
+
+@app.route('/api/generate_problem', methods=['POST'])
+def generate_racing_problem():
+    data = request.json
+    operation = data.get('operation')
+    level = int(data.get('level'))
+    
+    problem = generate_problem(operation, level)
+    session['current_problem'] = problem
+    
+    return jsonify(problem)
 
 @app.route('/api/answer', methods=['POST'])
 def check_answer():
@@ -178,6 +196,40 @@ def save_score():
         return jsonify({'error': 'No student info or score'})
     
     save_ranking(session['student_info'], session['total_score'])
+    return jsonify({'success': True})
+
+@app.route('/api/save_racing_score', methods=['POST'])
+def save_racing_score():
+    if 'student_info' not in session:
+        return jsonify({'error': 'No student info'})
+    
+    data = request.json
+    score = data.get('score', 0)
+    distance = data.get('distance', 0)
+    accuracy = data.get('accuracy', 0)
+    
+    # 레이싱 게임용 확장 랭킹 정보
+    student_info = session['student_info']
+    rankings = load_rankings()
+    
+    new_record = {
+        'school': student_info['school'],
+        'grade': student_info['grade'],
+        'name': student_info['name'],
+        'score': score,
+        'distance': distance,
+        'accuracy': accuracy,
+        'game_type': 'racing',
+        'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
+    
+    rankings.append(new_record)
+    rankings.sort(key=lambda x: x.get('score', 0), reverse=True)
+    rankings = rankings[:100]  # 상위 100명 저장
+    
+    with open(RANKING_FILE, 'w', encoding='utf-8') as f:
+        json.dump(rankings, f, ensure_ascii=False, indent=2)
+    
     return jsonify({'success': True})
 
 @app.route('/api/rankings')

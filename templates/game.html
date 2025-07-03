@@ -30,27 +30,40 @@
         <!-- 게임 선택 화면 -->
         <div id="gameSelection" class="row">
             <div class="col-12 text-center mb-4">
-                <h2>연산을 선택하세요</h2>
+                <h2>게임 모드를 선택하세요</h2>
+                <div class="mb-3">
+                    <a href="/racing" class="btn btn-primary btn-lg me-3">
+                        🏎️ 레이싱 게임 (NEW!)
+                    </a>
+                    <button class="btn btn-outline-secondary btn-lg" id="classicModeBtn">
+                        📚 클래식 모드
+                    </button>
+                </div>
+                <div id="classicGameSelection" style="display: none;">
+                    <h3>연산을 선택하세요</h3>
+                </div>
             </div>
-            <div class="col-md-3 col-sm-6 mb-3">
-                <button class="btn btn-success btn-lg w-100 operation-btn" data-operation="addition">
-                    ➕ 덧셈
-                </button>
-            </div>
-            <div class="col-md-3 col-sm-6 mb-3">
-                <button class="btn btn-warning btn-lg w-100 operation-btn" data-operation="subtraction">
-                    ➖ 뺄셈
-                </button>
-            </div>
-            <div class="col-md-3 col-sm-6 mb-3">
-                <button class="btn btn-info btn-lg w-100 operation-btn" data-operation="multiplication">
-                    ✖️ 곱셈
-                </button>
-            </div>
-            <div class="col-md-3 col-sm-6 mb-3">
-                <button class="btn btn-danger btn-lg w-100 operation-btn" data-operation="division">
-                    ➗ 나눗셈
-                </button>
+            <div id="operationButtons" style="display: none;">
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <button class="btn btn-success btn-lg w-100 operation-btn" data-operation="addition">
+                        ➕ 덧셈
+                    </button>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <button class="btn btn-warning btn-lg w-100 operation-btn" data-operation="subtraction">
+                        ➖ 뺄셈
+                    </button>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <button class="btn btn-info btn-lg w-100 operation-btn" data-operation="multiplication">
+                        ✖️ 곱셈
+                    </button>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <button class="btn btn-danger btn-lg w-100 operation-btn" data-operation="division">
+                        ➗ 나눗셈
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -181,6 +194,14 @@
             document.getElementById('gamePlay').style.display = 'none';
             document.getElementById('levelSelection').style.display = 'block';
             document.getElementById('endGame').style.display = 'none';
+        });
+
+        // 클래식 모드 버튼 클릭
+        document.getElementById('classicModeBtn').addEventListener('click', function () {
+            document.getElementById('classicGameSelection').style.display = 'block';
+            document.getElementById('operationButtons').style.display = 'flex';
+            this.style.display = 'none';
+            document.querySelector('.btn-primary').style.display = 'none';
         });
 
         // 새 문제 로드

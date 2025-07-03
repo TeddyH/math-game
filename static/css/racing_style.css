@@ -1,0 +1,761 @@
+/* 자동차 레이싱 게임 스타일 */
+
+/* 기본 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #87CEFA 100%);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow: hidden;
+    position: relative;
+}
+
+html {
+    height: -webkit-fill-available;
+}
+
+/* 게임 헤더 */
+.game-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.player-info,
+.distance-info {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.score {
+    color: #FFD700;
+    margin-left: 15px;
+}
+
+/* 시작 화면 */
+.start-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.start-content {
+    text-align: center;
+    color: white;
+    max-width: 90%;
+    animation: fadeIn 1s ease-out;
+}
+
+.game-title {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.game-description {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+/* 난이도 선택 */
+.difficulty-selection,
+.operation-selection {
+    margin-bottom: 30px;
+}
+
+.difficulty-selection h3,
+.operation-selection h3 {
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.difficulty-buttons,
+.operation-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.difficulty-btn,
+.operation-btn {
+    padding: 15px 20px;
+    border: 2px solid #fff;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    min-width: 100px;
+}
+
+.difficulty-btn:hover,
+.operation-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.difficulty-btn.selected,
+.operation-btn.selected {
+    background: #FFD700;
+    color: #333;
+    border-color: #FFD700;
+}
+
+.start-btn {
+    padding: 20px 40px;
+    font-size: 1.3rem;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.start-btn:enabled:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.start-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 메인 게임 화면 */
+.game-screen {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 60px);
+    background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #87CEFA 100%);
+}
+
+/* 하늘 컨테이너 */
+.sky-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #4A90E2 0%, #87CEEB 50%, #E0F6FF 100%);
+    overflow: hidden;
+}
+
+/* 배경 구름들 */
+.background-clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.bg-cloud {
+    position: absolute;
+    width: 80px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50px;
+    animation: cloudMove 8s linear infinite;
+}
+
+.bg-cloud::before {
+    content: '';
+    position: absolute;
+    top: -25px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+}
+
+.bg-cloud::after {
+    content: '';
+    position: absolute;
+    top: -15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+}
+
+@keyframes cloudMove {
+    from {
+        transform: translateY(-100px);
+    }
+
+    to {
+        transform: translateY(calc(100vh + 100px));
+    }
+}
+
+/* 비행기 */
+.plane {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    animation: planeFly 1s ease-in-out infinite alternate;
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+}
+
+.plane-image {
+    width: 60px;
+    height: auto;
+    transition: all 0.3s ease;
+    transform: rotate(-45deg);
+}
+
+@keyframes planeFly {
+    from {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    to {
+        transform: translateX(-50%) translateY(-8px);
+    }
+}
+
+
+
+/* 문제 영역 */
+.question-area {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+}
+
+.question-bubble {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px 30px;
+    border-radius: 20px;
+    border: 3px solid #0066cc;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: questionPop 0.5s ease-out;
+}
+
+.question-bubble span {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0066cc;
+}
+
+@keyframes questionPop {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 3개의 구름 */
+.clouds {
+    position: absolute;
+    top: -40%;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    display: flex;
+    z-index: 300;
+}
+
+@keyframes cloudsAppear {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cloud-choice {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 350;
+    min-height: 200px;
+    border: 2px solid transparent;
+}
+
+.cloud-choice:hover {
+    transform: none;
+    /* 호버 효과 제거 */
+}
+
+.left-cloud,
+.center-cloud,
+.right-cloud {
+    background: transparent;
+    border: none;
+    /* 기존 배경과 테두리 제거 */
+}
+
+.cloud-sign {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border: 4px solid #87CEEB;
+    animation: cloudGlow 2s ease-in-out infinite alternate;
+    z-index: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    min-height: 60px;
+}
+
+@keyframes cloudGlow {
+    from {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    to {
+        box-shadow: 0 5px 25px rgba(135, 206, 235, 0.6);
+    }
+}
+
+/* 점수 팝업 효과 */
+.score-popup {
+    position: absolute;
+    font-size: 1.8rem;
+    color: #FFD700;
+    font-weight: bold;
+    animation: scorePopupAnim 1s ease-out forwards;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 500;
+    pointer-events: none;
+    /* 클릭 방지 */
+}
+
+@keyframes scorePopupAnim {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-60px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* 오답 시 정답 표시 */
+.correct-indicator .cloud-sign {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.8) !important;
+    animation: correctIndicatorPulse 1.5s ease-in-out;
+}
+
+@keyframes correctIndicatorPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* 오답 시 흔들림 효과 */
+.wrong-shake {
+    animation: wrongCloudShake 0.5s ease-out;
+}
+
+@keyframes wrongCloudShake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-15px);
+    }
+
+    40% {
+        transform: translateX(15px);
+    }
+
+    60% {
+        transform: translateX(-10px);
+    }
+
+    80% {
+        transform: translateX(10px);
+    }
+}
+
+/* 정답/오답 효과 */
+.cloud-choice.correct {
+    background: radial-gradient(ellipse at center, rgba(40, 167, 69, 0.8) 0%, rgba(32, 201, 151, 0.6) 70%, transparent 100%) !important;
+    animation: correctCloud 0.8s ease-out;
+}
+
+.cloud-choice.wrong {
+    background: radial-gradient(ellipse at center, rgba(220, 53, 69, 0.8) 0%, rgba(253, 126, 20, 0.6) 70%, transparent 100%) !important;
+    animation: wrongCloud 0.5s ease-out;
+}
+
+/* 타겟 하이라이트 효과 */
+.cloud-choice.target-highlight .cloud-sign {
+    border-color: #FFD700 !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    animation: targetPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes targetPulse {
+    from {
+        border-color: #FFD700;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+
+    to {
+        border-color: #FFA500;
+        box-shadow: 0 0 30px rgba(255, 165, 0, 0.8);
+    }
+}
+
+@keyframes correctCloud {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes wrongCloud {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* 게임 진행 상태 */
+.game-status {
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    right: 20px;
+    color: white;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745, #20c997);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    width: 0%;
+}
+
+.status-text {
+    font-size: 1rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 게임 종료 화면 */
+.game-over-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+}
+
+.game-over-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    max-width: 90%;
+    animation: gameOverSlide 0.8s ease-out;
+}
+
+@keyframes gameOverSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.final-stats {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.game-over-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.play-again-btn,
+.save-score-btn,
+.view-rankings-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.play-again-btn {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+}
+
+.save-score-btn {
+    background: linear-gradient(45deg, #0066cc, #004499);
+    color: white;
+}
+
+.view-rankings-btn {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: #333;
+}
+
+.play-again-btn:hover,
+.save-score-btn:hover,
+.view-rankings-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 조작 안내 스타일 */
+.control-hint {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    font-size: 0.9rem;
+    color: #666;
+    animation: hintBlink 2s ease-in-out infinite alternate;
+}
+
+@keyframes hintBlink {
+    from {
+        opacity: 0.7;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cloudsFall {
+    from {
+        transform: translateY(-100%);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateY(80vh);
+        opacity: 0.8;
+    }
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2rem;
+    }
+
+    .question-bubble span {
+        font-size: 1.5rem;
+    }
+
+    .difficulty-buttons,
+    .operation-buttons {
+        gap: 10px;
+    }
+
+    .difficulty-btn,
+    .operation-btn {
+        min-width: 80px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
+    .final-stats {
+        gap: 15px;
+    }
+
+    .stat-value {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .game-header {
+        height: 50px;
+        padding: 0 15px;
+        font-size: 0.9rem;
+    }
+
+    .game-screen {
+        top: 50px;
+        height: calc(100% - 50px);
+    }
+
+    .question-bubble {
+        padding: 15px 20px;
+    }
+
+    .question-bubble span {
+        font-size: 1.3rem;
+    }
+
+    .game-over-content {
+        padding: 30px 20px;
+    }
+
+    .game-over-buttons {
+        gap: 10px;
+    }
+
+    .play-again-btn,
+    .save-score-btn,
+    .view-rankings-btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
+    /* iOS Safari 대응 */
+    body {
+        min-height: -webkit-fill-available;
+    }
+
+    @supports (-webkit-touch-callout: none) {
+        .game-screen {
+            height: calc(-webkit-fill-available - 50px);
+        }
+    }
+}

@@ -3,6 +3,33 @@
     "school": "한빛초",
     "grade": "2",
     "name": "홍찬민",
+    "score": 200,
+    "distance": 100,
+    "accuracy": 100,
+    "game_type": "racing",
+    "date": "2025-07-02 23:36:13"
+  },
+  {
+    "school": "한빛초",
+    "grade": "2",
+    "name": "홍찬민",
+    "score": 100,
+    "date": "2025-07-02 23:32:02"
+  },
+  {
+    "school": "한빛초",
+    "grade": "2",
+    "name": "홍찬민",
+    "score": 100,
+    "distance": 100,
+    "accuracy": 100,
+    "game_type": "racing",
+    "date": "2025-07-02 23:35:11"
+  },
+  {
+    "school": "한빛초",
+    "grade": "2",
+    "name": "홍찬민",
     "score": 90,
     "date": "2025-07-01 23:42:50"
   },
@@ -10,7 +37,27 @@
     "school": "한빛초",
     "grade": "2",
     "name": "홍찬민",
+    "score": 60,
+    "distance": 200,
+    "accuracy": 67,
+    "game_type": "racing",
+    "date": "2025-07-03 23:31:00"
+  },
+  {
+    "school": "한빛초",
+    "grade": "2",
+    "name": "홍찬민",
     "score": 50,
     "date": "2025-07-01 23:27:08"
+  },
+  {
+    "school": "한빛초",
+    "grade": "2",
+    "name": "홍찬민",
+    "score": 40,
+    "distance": 200,
+    "accuracy": 67,
+    "game_type": "racing",
+    "date": "2025-07-03 23:31:34"
   }
 ]
