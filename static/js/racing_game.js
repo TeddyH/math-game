@@ -119,18 +119,30 @@ class RacingMathGame {
 
         // 구름 클릭은 제거 (이제 비행기를 이동시켜야 함)
 
-        // 게임 종료 후 버튼들
-        document.getElementById('playAgainBtn').addEventListener('click', () => {
+        // 게임 종료 후 버튼들 (클릭과 터치 모두 지원)
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const resetGame = (e) => {
+            e.preventDefault();
             this.resetGame();
-        });
+        };
+        playAgainBtn.addEventListener('click', resetGame);
+        playAgainBtn.addEventListener('touchend', resetGame);
 
-        document.getElementById('saveScoreBtn').addEventListener('click', () => {
+        const saveScoreBtn = document.getElementById('saveScoreBtn');
+        const saveScore = (e) => {
+            e.preventDefault();
             this.saveScore();
-        });
+        };
+        saveScoreBtn.addEventListener('click', saveScore);
+        saveScoreBtn.addEventListener('touchend', saveScore);
 
-        document.getElementById('viewRankingsBtn').addEventListener('click', () => {
+        const viewRankingsBtn = document.getElementById('viewRankingsBtn');
+        const viewRankings = (e) => {
+            e.preventDefault();
             window.location.href = '/rankings';
-        });
+        };
+        viewRankingsBtn.addEventListener('click', viewRankings);
+        viewRankingsBtn.addEventListener('touchend', viewRankings);
 
         // 화면 크기 변경 시 블록 크기 재조정
         window.addEventListener('resize', () => {
